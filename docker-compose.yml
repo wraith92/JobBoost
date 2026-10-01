@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: jobboost-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: jobboost
+      POSTGRES_PASSWORD: jobboost_dev
+      POSTGRES_DB: jobboost
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobboost -d jobboost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: jobboost-n8n
+    restart: unless-stopped
+
+    ports:
+      - "5678:5678"
+
+    environment:
+      - TZ=Europe/Paris
+      - GENERIC_TIMEZONE=Europe/Paris
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  postgres_data:
+  n8n_data:
