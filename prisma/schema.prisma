@@ -109,3 +109,34 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+model Job {
+  id String @id @default(cuid())
+
+  source     String
+  externalId String
+
+  title       String
+  company     String?
+  description String?
+
+  location   String?
+  department String?
+
+  contractType String?
+  experience   String?
+  salary       String?
+
+  url String?
+
+  sourceCreatedAt DateTime?
+  sourceUpdatedAt DateTime?
+
+  raw Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([source, externalId])
+  @@index([source])
+  @@index([title])
+}
