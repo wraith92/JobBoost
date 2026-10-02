@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Job = {
   id: string;
@@ -45,6 +46,10 @@ export default function JobsPage() {
   const [source, setSource] = useState('ALL');
   const [analyzingJobId, setAnalyzingJobId] = useState<string | null>(null);
   const [compatibilityFilter, setCompatibilityFilter] = useState('ALL');
+  const router = useRouter();
+
+const [generatingResumeId, setGeneratingResumeId] =
+  useState<string | null>(null);
   
 
   useEffect(() => {
@@ -240,6 +245,55 @@ export default function JobsPage() {
     badge: 'bg-red-100 text-red-700',
     label: 'Faible compatibilité',
   };
+}
+async function generateResume(jobId: string) {
+  try {
+    setGeneratingResumeId(jobId);
+
+    const response = await fetch(
+      `${API_URL}/resume/jobs/${jobId}/generate`,
+      {
+        method: 'POST',
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+
+      throw new Error(
+        error ||
+          'Impossible de générer le CV',
+      );
+    }
+
+    const data = await response.json();
+
+    const resumeId =
+      data.resume?.id ?? data.id;
+
+    if (!resumeId) {
+      throw new Error(
+        'ID du CV introuvable',
+      );
+    }
+
+    router.push(
+      `/resume/${resumeId}`,
+    );
+  } catch (error) {
+    console.error(
+      'Erreur génération CV :',
+      error,
+    );
+
+    alert(
+      error instanceof Error
+        ? error.message
+        : 'Erreur pendant la génération du CV',
+    );
+  } finally {
+    setGeneratingResumeId(null);
+  }
 }
 
 
@@ -545,6 +599,21 @@ export default function JobsPage() {
                   ? 'Ré-analyser avec IA'
                   : 'Analyser avec IA'}
             </button>
+            <button
+  type="button"
+  onClick={() =>
+    generateResume(job.id)
+  }
+  disabled={
+    generatingResumeId === job.id ||
+    !job.analysis
+  }
+  className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  {generatingResumeId === job.id
+    ? 'Génération...'
+    : 'Générer le CV'}
+</button>
 
             {job.url ? (
               <a

@@ -4,6 +4,13 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { JobsModule } from './jobs/jobs/jobs.module.js';
 import { LlmModule } from './llm/llm.module.js';
+import {
+  ResumeModule,
+} from './resume/resume.module.js';
+import {
+  CoverLetterModule,
+} from './cover-letter/cover-letter.module.js';
+import { ApplicationsModule } from './applications/applications.module.js';
 
 @Module({
   imports: [
@@ -14,6 +21,9 @@ import { LlmModule } from './llm/llm.module.js';
     ProfileModule,
     JobsModule,
      LlmModule,
+     ResumeModule,
+     CoverLetterModule,
+     ApplicationsModule,
   ],
 })
 export class AppModule {}

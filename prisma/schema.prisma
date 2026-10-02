@@ -137,6 +137,9 @@ model Job {
   updatedAt DateTime @updatedAt
 
   analysis JobAnalysis?
+  resumes Resume[]
+  coverLetters CoverLetter[]
+  applications Application[]
 
   @@unique([source, externalId])
   @@index([source])
@@ -165,4 +168,89 @@ model JobAnalysis {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+model Resume {
+  id String @id @default(cuid())
+
+  jobId String?
+  job   Job? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  title String
+
+  summary String?
+
+  skills String[]
+
+  content Json?
+
+  status String @default("DRAFT")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coverLetters CoverLetter[]
+  applications Application[]
+
+  @@index([jobId])
+}
+model CoverLetter {
+  id       String @id @default(cuid())
+
+  jobId    String
+  job      Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  resumeId String?
+  resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  title    String
+  content  String
+
+  status   String @default("DRAFT")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications Application[]
+
+  @@index([jobId])
+  @@index([resumeId])
+}
+enum ApplicationStatus {
+  DRAFT
+  READY_TO_VALIDATE
+  SENT
+  RESPONSE_RECEIVED
+  INTERVIEW
+  REJECTED
+  FOLLOW_UP
+  ARCHIVED
+}
+
+model Application {
+  id String @id @default(cuid())
+
+  jobId String
+  job   Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  resumeId String?
+  resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  coverLetterId String?
+  coverLetter   CoverLetter? @relation(fields: [coverLetterId], references: [id], onDelete: SetNull)
+
+  status ApplicationStatus @default(DRAFT)
+
+  channel String?
+
+  notes String?
+
+  appliedAt DateTime?
+
+  followUpAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jobId])
+  @@index([status])
 }

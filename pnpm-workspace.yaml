@@ -7,3 +7,4 @@ allowBuilds:
   unrs-resolver: false
   "@prisma/engines": true
   prisma: true
+  puppeteer: true
