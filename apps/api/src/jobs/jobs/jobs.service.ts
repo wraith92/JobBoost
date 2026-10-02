@@ -6,10 +6,14 @@ export class JobsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.job.findMany({
-      orderBy: {
-        sourceCreatedAt: 'desc',
-      },
-    });
-  }
+  return this.prisma.job.findMany({
+    include: {
+      analysis: true,
+    },
+
+    orderBy: {
+      sourceCreatedAt: 'desc',
+    },
+  });
+}
 }
