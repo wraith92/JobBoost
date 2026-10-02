@@ -136,7 +136,33 @@ model Job {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  analysis JobAnalysis?
+
   @@unique([source, externalId])
   @@index([source])
   @@index([title])
+}
+model JobAnalysis {
+  id String @id @default(cuid())
+
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  requiredSkills String[]
+  optionalSkills String[]
+  technologies   String[]
+
+  seniority      String?
+  remote         String?
+  salarySummary  String?
+
+  matchedSkills  String[]
+  missingSkills  String[]
+
+  score Int?
+
+  summary String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
