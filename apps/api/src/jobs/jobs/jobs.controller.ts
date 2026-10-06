@@ -1,6 +1,8 @@
 import {
+  Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -10,6 +12,7 @@ import { AdzunaService } from '../collectors/adzuna.service.js';
 //import { LeverService } from '../collectors/lever.service.js';
 import { FranceTravailService } from '../collectors/france-travail.service.js';
 import { WebSearchCollectorService } from '../collectors/web-search-collector.service.js';
+import { UpsertJobDto } from './upsert-job.dto.js';
 
 @Controller('jobs')
 export class JobsController {
@@ -25,6 +28,20 @@ export class JobsController {
   findAll() {
     return this.jobsService.findAll();
   }
+
+  @Post(':jobId/ready-to-validate')
+markReadyToValidate(
+  @Param('jobId')
+  jobId: string,
+) {
+  return this.jobsService.markReadyToValidate(
+    jobId,
+  );
+}
+  @Post('upsert')
+upsertJob(@Body() body: UpsertJobDto) {
+  return this.jobsService.upsertJob(body);
+}
 
   @Post('import/france-travail')
   importFranceTravail(
@@ -130,6 +147,14 @@ importIndeed(
     keyword || 'developpeur full stack',
     location || 'Ile-de-France',
     limit ? Number(limit) : 10,
+  );
+}
+@Post(':jobId/prepare-application')
+prepareApplication(
+  @Param('jobId') jobId: string,
+) {
+  return this.jobsService.prepareApplication(
+    jobId,
   );
 }
 }

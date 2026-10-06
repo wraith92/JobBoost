@@ -13,15 +13,21 @@ import {
 
 type CreateApplicationBody = {
   jobId: string;
+
   resumeId?: string | null;
+
   coverLetterId?: string | null;
+
   channel?: string | null;
+
   notes?: string | null;
 };
 
 type UpdateApplicationBody = {
   channel?: string | null;
+
   notes?: string | null;
+
   followUpAt?: string | null;
 };
 
@@ -36,6 +42,26 @@ export class ApplicationsController {
       ApplicationsService,
   ) {}
 
+  // ============================================================
+  // PREPARE AUTOMATIC APPLICATION
+  // ============================================================
+
+  @Post(
+    'jobs/:jobId/prepare',
+  )
+  prepare(
+    @Param('jobId')
+    jobId: string,
+  ) {
+    return this.applicationsService.prepare(
+      jobId,
+    );
+  }
+
+  // ============================================================
+  // CREATE MANUALLY
+  // ============================================================
+
   @Post()
   create(
     @Body()
@@ -46,10 +72,18 @@ export class ApplicationsController {
     );
   }
 
+  // ============================================================
+  // LIST
+  // ============================================================
+
   @Get()
   findAll() {
     return this.applicationsService.findAll();
   }
+
+  // ============================================================
+  // GET ONE
+  // ============================================================
 
   @Get(':id')
   findOne(
@@ -60,6 +94,10 @@ export class ApplicationsController {
       id,
     );
   }
+
+  // ============================================================
+  // UPDATE
+  // ============================================================
 
   @Patch(':id')
   update(
@@ -75,6 +113,10 @@ export class ApplicationsController {
     );
   }
 
+  // ============================================================
+  // STATUS
+  // ============================================================
+
   @Patch(':id/status')
   updateStatus(
     @Param('id')
@@ -86,6 +128,20 @@ export class ApplicationsController {
     return this.applicationsService.updateStatus(
       id,
       body.status,
+    );
+  }
+
+  // ============================================================
+  // SEND / VALIDATE
+  // ============================================================
+
+  @Post(':id/send')
+  send(
+    @Param('id')
+    id: string,
+  ) {
+    return this.applicationsService.send(
+      id,
     );
   }
 }

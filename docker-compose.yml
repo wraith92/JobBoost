@@ -32,6 +32,9 @@ services:
     environment:
       - TZ=Europe/Paris
       - GENERIC_TIMEZONE=Europe/Paris
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+      - FT_CLIENT_ID=${FT_CLIENT_ID}
+      - FT_CLIENT_SECRET=${FT_CLIENT_SECRET}
 
     volumes:
       - n8n_data:/home/node/.n8n

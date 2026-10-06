@@ -44,7 +44,7 @@ model Experience {
 
   startDate DateTime
   endDate   DateTime?
-  current   Boolean @default(false)
+  current   Boolean   @default(false)
 
   description String?
   bullets     String[]
@@ -109,6 +109,7 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Job {
   id String @id @default(cuid())
 
@@ -136,15 +137,20 @@ model Job {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  analysis JobAnalysis?
-  resumes Resume[]
-  coverLetters CoverLetter[]
-  applications Application[]
+  analysis          JobAnalysis?
+  resumes           Resume[]
+  coverLetters      CoverLetter[]
+  applications      Application[]
+  applicationMethod ApplicationMethod @default(UNKNOWN)
+  applicationStatus ApplicationStatus @default(DRAFT)
+  applicationUrl    String?
+  contactEmail      String?
 
   @@unique([source, externalId])
   @@index([source])
   @@index([title])
 }
+
 model JobAnalysis {
   id String @id @default(cuid())
 
@@ -155,12 +161,12 @@ model JobAnalysis {
   optionalSkills String[]
   technologies   String[]
 
-  seniority      String?
-  remote         String?
-  salarySummary  String?
+  seniority     String?
+  remote        String?
+  salarySummary String?
 
-  matchedSkills  String[]
-  missingSkills  String[]
+  matchedSkills String[]
+  missingSkills String[]
 
   score Int?
 
@@ -169,11 +175,12 @@ model JobAnalysis {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Resume {
   id String @id @default(cuid())
 
   jobId String?
-  job   Job? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  job   Job?    @relation(fields: [jobId], references: [id], onDelete: SetNull)
 
   title String
 
@@ -193,19 +200,20 @@ model Resume {
 
   @@index([jobId])
 }
-model CoverLetter {
-  id       String @id @default(cuid())
 
-  jobId    String
-  job      Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+model CoverLetter {
+  id String @id @default(cuid())
+
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   resumeId String?
   resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
 
-  title    String
-  content  String
+  title   String
+  content String
 
-  status   String @default("DRAFT")
+  status String @default("DRAFT")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -215,15 +223,28 @@ model CoverLetter {
   @@index([jobId])
   @@index([resumeId])
 }
+
 enum ApplicationStatus {
   DRAFT
   READY_TO_VALIDATE
+  APPROVED
+  SENDING
   SENT
+  FAILED
   RESPONSE_RECEIVED
   INTERVIEW
   REJECTED
   FOLLOW_UP
   ARCHIVED
+}
+
+enum ApplicationMethod {
+  UNKNOWN
+  EMAIL
+  FRANCE_TRAVAIL
+  PARTNER
+  EXTERNAL_SITE
+  MANUAL
 }
 
 model Application {
@@ -241,16 +262,14 @@ model Application {
   status ApplicationStatus @default(DRAFT)
 
   channel String?
-
   notes String?
 
   appliedAt DateTime?
-
   followUpAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([jobId])
+  @@unique([jobId])
   @@index([status])
 }
