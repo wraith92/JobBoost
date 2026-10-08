@@ -1,4 +1,10 @@
-import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 
 export class CreateProfileDto {
   @IsString()
@@ -22,6 +28,11 @@ export class CreateProfileDto {
   @IsOptional()
   @IsString()
   headline?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  targetRoles?: string[];
 
   @IsOptional()
   @IsString()

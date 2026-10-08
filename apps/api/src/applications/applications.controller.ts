@@ -10,7 +10,9 @@ import {
 import {
   ApplicationsService,
 } from './applications.service.js';
-
+import {
+  ApplicationFilesService,
+} from './application-files.service.js';
 type CreateApplicationBody = {
   jobId: string;
 
@@ -40,6 +42,8 @@ export class ApplicationsController {
   constructor(
     private readonly applicationsService:
       ApplicationsService,
+    private readonly applicationFilesService:
+      ApplicationFilesService,
   ) {}
 
   // ============================================================
@@ -144,4 +148,14 @@ export class ApplicationsController {
       id,
     );
   }
+  @Post(':id/prepare-files')
+prepareFiles(
+  @Param('id')
+  id: string,
+) {
+  return this.applicationFilesService
+    .prepareFiles(
+      id,
+    );
+}
 }

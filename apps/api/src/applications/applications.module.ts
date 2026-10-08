@@ -22,6 +22,9 @@ import {
   JobAnalyzerService,
 } from '../llm/job-analyzer.service.js';
 import { MailModule } from '../mail/mail.module.js';
+import {
+  ApplicationFilesService,
+} from './application-files.service.js';
 
 @Module({
   imports: [
@@ -36,6 +39,7 @@ import { MailModule } from '../mail/mail.module.js';
 
   providers: [
     ApplicationsService,
+    ApplicationFilesService,
 
     // Permet à /prepare d'analyser
     // automatiquement une offre

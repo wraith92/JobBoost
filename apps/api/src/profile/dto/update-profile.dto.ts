@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsEmail,
   IsOptional,
   IsString,
@@ -29,6 +30,11 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   headline?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  targetRoles?: string[];
 
   @IsOptional()
   @IsString()

@@ -690,9 +690,23 @@ export class ApplicationsService {
       );
     }
     const method =
-      application.job.applicationMethod;
-    const url =
+  application.job.applicationMethod;
+const franceTravailUrl =
+  application.job.source ===
+    'FRANCE_TRAVAIL' &&
+  application.job.externalId
+    ? `https://candidat.francetravail.fr/offres/recherche/detail/${encodeURIComponent(
+        application.job.externalId,
+      )}`
+    : null;
+const url =
+  method ===
+    ApplicationMethod.FRANCE_TRAVAIL
+    ? franceTravailUrl ??
+      application.job.url ??
       application.job.applicationUrl ??
+      null
+    : application.job.applicationUrl ??
       application.job.url ??
       null;
     const isLegacyApprovedEmail =
